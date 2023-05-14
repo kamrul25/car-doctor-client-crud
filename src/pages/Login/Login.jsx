@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import login from "../../assets/images/login/login.svg";
+import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const Login = () => {
+  const {signIn} = useContext(AuthContext)
 
   const handleLogin = event =>{
     event.preventDefault();
@@ -9,6 +12,13 @@ const Login = () => {
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password)
+
+    signIn(email, password)
+    .then(result =>{
+      const user = result.user;
+      console.log(user)
+    })
+    .then(error => console.log(error))
   }
   return (
     <div className="hero  bg-base-200">
@@ -55,7 +65,7 @@ const Login = () => {
                 />
               </div>
             </form>
-            <p className="mt-4">If you are new please create an account <Link className="text-orange-500" to="/signUp">SignUp</Link></p>
+            <p className="mt-4">If you are first time in here please create an account <Link className="text-orange-500" to="/signUp">SignUp</Link></p>
           </div>
         </div>
       </div>
