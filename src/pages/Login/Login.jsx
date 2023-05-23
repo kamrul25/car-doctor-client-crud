@@ -1,25 +1,39 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import login from "../../assets/images/login/login.svg";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
 const Login = () => {
-  const {signIn} = useContext(AuthContext)
+  const { signIn, signInByGoogle } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || '/';
 
-  const handleLogin = event =>{
+  const handleLogin = (event) => {
     event.preventDefault();
-    const form= event.target;
+    const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password)
+    console.log(email, password);
 
     signIn(email, password)
-    .then(result =>{
-      const user = result.user;
-      console.log(user)
-    })
-    .catch(error => console.log(error))
-  }
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        navigate(from, { replace: true });
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleGoogle = () => {
+    signInByGoogle()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        navigate(from, { replace: true });
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <div className="hero  bg-base-200">
       <div className="hero-content flex-col lg:flex-row gap-6">
@@ -65,7 +79,19 @@ const Login = () => {
                 />
               </div>
             </form>
-            <p className="mt-4">If you are first time in here please create an account <Link className="text-orange-500" to="/signUp">SignUp</Link></p>
+            <p className="mt-4">
+              If you are first time in here please create an account{" "}
+              <Link className="text-orange-500" to="/signUp">
+                SignUp
+              </Link>
+            </p>
+            <div className="divider">OR</div>
+            <button
+              className="btn btn-circle btn-outline mx-auto"
+              onClick={handleGoogle}
+            > 
+            <p className="text-center">G</p>
+            </button>
           </div>
         </div>
       </div>
